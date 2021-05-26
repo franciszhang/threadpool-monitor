@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.yunzhi.xiaoyuanhao.threadpool.monitor.config.YunzhiThreadPoolAutoConfig
