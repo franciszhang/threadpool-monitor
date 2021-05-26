@@ -22,7 +22,7 @@ public class YzThreadPoolExecutor extends ThreadPoolExecutor {
     }
 
     public YzThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, String poolName) {
-        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, new DefaultYzRejectedExecutionHandler(), poolName);
+        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, new DiscardPolicy(), poolName);
     }
 
     public YzThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, YzRejectedExecutionHandler handler, String poolName) {
@@ -51,12 +51,40 @@ public class YzThreadPoolExecutor extends ThreadPoolExecutor {
     }
 
 
-    public static class DefaultYzRejectedExecutionHandler extends YzRejectedExecutionHandler {
+    public static class CallerRunsPolicy extends YzRejectedExecutionHandler {
         @Override
-        protected void yzRejectedExecution(Runnable r, YzThreadPoolExecutor executor) {
-            System.out.println("threadName:" + Thread.currentThread().getName() + ",yzRejectedExecution executor:" + executor.getPoolName() + ",reject" + getRejectCount().get());
+        protected void rejectedExecution(Runnable r, YzThreadPoolExecutor executor) {
+            if (!executor.isShutdown()) {
+                r.run();
+            }
+        }
 
+    }
+
+    public static class AbortPolicy extends YzRejectedExecutionHandler {
+        @Override
+        protected void rejectedExecution(Runnable r, YzThreadPoolExecutor e) {
+            throw new RejectedExecutionException("Task " + r.toString() +
+                    " rejected from " +
+                    e.toString());
         }
     }
+
+    public static class DiscardPolicy extends YzRejectedExecutionHandler {
+        @Override
+        public void rejectedExecution(Runnable r, YzThreadPoolExecutor e) {
+        }
+    }
+
+    public static class DiscardOldestPolicy extends YzRejectedExecutionHandler {
+        @Override
+        public void rejectedExecution(Runnable r, YzThreadPoolExecutor e) {
+            if (!e.isShutdown()) {
+                e.getQueue().poll();
+                e.execute(r);
+            }
+        }
+    }
+
 
 }

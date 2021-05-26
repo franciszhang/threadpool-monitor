@@ -20,12 +20,12 @@ public abstract class YzRejectedExecutionHandler implements RejectedExecutionHan
     }
 
 
-    protected abstract void yzRejectedExecution(Runnable r, YzThreadPoolExecutor executor);
+    protected abstract void rejectedExecution(Runnable r, YzThreadPoolExecutor executor);
 
     @Override
     public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
         incrementCount();
-        yzRejectedExecution(r, (YzThreadPoolExecutor) executor);
+        rejectedExecution(r, (YzThreadPoolExecutor) executor);
     }
 
     public AtomicLong getRejectCount() {
