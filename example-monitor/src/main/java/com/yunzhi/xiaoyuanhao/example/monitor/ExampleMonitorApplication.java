@@ -1,11 +1,14 @@
 package com.yunzhi.xiaoyuanhao.example.monitor;
 
-import com.yunzhi.xiaoyuanhao.threadpool.monitor.YzThreadPoolExecutor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 @RestController
@@ -20,13 +23,14 @@ public class ExampleMonitorApplication {
     @RequestMapping("/init")
     public String initPool(@RequestParam(defaultValue = "10") Integer num) {
         init(num);
+
         return "success";
     }
 
-    YzThreadPoolExecutor defaultExecutor = YzThreadPoolExecutor.getDefaultExecutor("test-pool");
-    YzThreadPoolExecutor defaultExecutor1 = YzThreadPoolExecutor.getDefaultExecutor("test-pool");
-    YzThreadPoolExecutor defaultExecutor2 = YzThreadPoolExecutor.getDefaultExecutor("test-pool");
-    YzThreadPoolExecutor defaultExecutor3 = YzThreadPoolExecutor.getDefaultExecutor("test-pool");
+    ThreadPoolExecutor defaultExecutor = new ThreadPoolExecutor(10,100,60L, TimeUnit.SECONDS,new LinkedBlockingDeque<>(1000));
+    ThreadPoolExecutor defaultExecutor1 = new ThreadPoolExecutor(20,200,60L, TimeUnit.SECONDS,new LinkedBlockingDeque<>(1000));
+    ThreadPoolExecutor defaultExecutor2 = new ThreadPoolExecutor(30,300,60L, TimeUnit.SECONDS,new LinkedBlockingDeque<>(1000));
+    ThreadPoolExecutor defaultExecutor3 = new ThreadPoolExecutor(40,400,60L, TimeUnit.SECONDS,new LinkedBlockingDeque<>(1000));
 
     private void init(int num) {
 
