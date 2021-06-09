@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 
 
@@ -85,6 +86,36 @@ public class ThreadPoolAgentEndpoint {
         if (threadName != null) {
             return threadName;
         }
+
+        threadName = getThreadPrefixName(threadPoolExecutor);
+
+        if (!StringUtils.hasText(threadName)) {
+            threadName = getWorkerName(threadPoolExecutor);
+        }
+
+        if (!StringUtils.hasText(threadName)) {
+            threadName = threadPoolExecutor.getThreadFactory().toString();
+        }
+
+        threadNameMap.put(threadPoolExecutor.hashCode(), threadName);
+        return threadName;
+    }
+
+    private String getThreadPrefixName(ThreadPoolExecutor threadPoolExecutor) {
+        String threadPrefixName = null;
+        ThreadFactory threadFactory = threadPoolExecutor.getThreadFactory();
+        Class<?> aClass = threadFactory.getClass();
+        try {
+            Field namePrefixField = aClass.getDeclaredField("namePrefix");
+            namePrefixField.setAccessible(true);
+            threadPrefixName = (String) namePrefixField.get(threadFactory);
+        } catch (Exception ignore) {
+        }
+        return threadPrefixName;
+    }
+
+    private String getWorkerName(ThreadPoolExecutor threadPoolExecutor) {
+        String threadName = null;
         try {
             Field workersField = getWorkersField(threadPoolExecutor);
             workersField.setAccessible(true);
@@ -98,7 +129,6 @@ public class ThreadPoolAgentEndpoint {
                 Thread thread = (Thread) threadField.get(next);
                 threadName = dealThreadName(thread.getName());
                 if (StringUtils.hasText(threadName)) {
-                    threadNameMap.put(threadPoolExecutor.hashCode(), threadName);
                     return threadName;
                 } else {
                     return threadPoolExecutor.getThreadFactory().toString();
@@ -107,8 +137,7 @@ public class ThreadPoolAgentEndpoint {
         } catch (Exception e) {
             // ignore
         }
-
-        return threadPoolExecutor.getThreadFactory().toString();
+        return threadName;
     }
 
     private Field getWorkersField(ThreadPoolExecutor threadPoolExecutor) throws NoSuchFieldException {
