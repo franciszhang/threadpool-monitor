@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.yunzhi.xiaoyuanhao</groupId>
 	<artifactId>threadpool-monitor</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>threadpool-monitor</name>
 	<description>threadpool-monitor</description>
 	<properties>
