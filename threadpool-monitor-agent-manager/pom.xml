@@ -29,4 +29,17 @@
         </plugins>
     </build>
 
+
+    <distributionManagement>
+        <repository>
+            <id>nbugs_releases</id>
+            <name>nbugs releases</name>
+            <url>http://artifactory.api.xiaoyuanhao.com/artifactory/libs-release-local</url>
+        </repository>
+        <snapshotRepository>
+            <id>nbugs_snapshots</id>
+            <name>nbugs snapshots</name>
+            <url>http://artifactory.api.xiaoyuanhao.com/artifactory/libs-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
