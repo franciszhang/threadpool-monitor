@@ -42,6 +42,11 @@
 			<version>1.10.22</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.yunzhi.xiaoyuanhao</groupId>
+			<artifactId>threadpool-monitor</artifactId>
+			<version>1.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -4,8 +4,10 @@ package com.yunzhi.xiaoyuanhao.threadpool.monitor.pojo;
  * @author francis
  * @version 2021-05-25
  */
-public class ThreadPoolData {
+public class ThreadPoolDataDTO {
     private String threadPoolName;
+    private String threadPoolFactoryClass;
+    private int threadPoolHashCode;
     private int coreSize;
     private int maximumPoolSize;
     private int activeCount;
@@ -29,6 +31,22 @@ public class ThreadPoolData {
 
     public void setThreadPoolName(String threadPoolName) {
         this.threadPoolName = threadPoolName;
+    }
+
+    public String getThreadPoolFactoryClass() {
+        return threadPoolFactoryClass;
+    }
+
+    public void setThreadPoolFactoryClass(String threadPoolFactoryClass) {
+        this.threadPoolFactoryClass = threadPoolFactoryClass;
+    }
+
+    public int getThreadPoolHashCode() {
+        return threadPoolHashCode;
+    }
+
+    public void setThreadPoolHashCode(int threadPoolHashCode) {
+        this.threadPoolHashCode = threadPoolHashCode;
     }
 
     public int getCoreSize() {

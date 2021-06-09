@@ -1,7 +1,6 @@
 package com.yunzhi.xiaoyuanhao.threadpool.monitor.agent;
 
 
-import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.interceptor.EndpointDiscovererInterceptor;
 import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.interceptor.ThreadPoolConstructorInterceptor;
 import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.interceptor.ThreadPoolRejectInterceptor;
 import net.bytebuddy.ByteBuddy;
@@ -33,28 +32,25 @@ import java.util.jar.JarFile;
  */
 public class ThreadPoolMonitorPreMainAgent {
     private static final String THREAD_POOL_EXECUTOR_NAME = "java.util.concurrent.ThreadPoolExecutor";
-    private static final String WEB_ENDPOINT_DISCOVERER_NAME = "org.springframework.boot.actuate.endpoint.web.annotation.WebEndpointDiscoverer";
-
 
     public static void premain(String agentArgs, Instrumentation inst) {
         try {
-            inst.appendToBootstrapClassLoaderSearch(
-                    new JarFile(findAgentPath() + "/threadpool-monitor-agent-manager-1.0.0.jar"));
-        } catch (Exception e) {
+            inst.appendToBootstrapClassLoaderSearch(new JarFile(findAgentPath() + "/threadpool-monitor-agent-manager-1.0.0.jar"));
+            System.out.println("########find threadpool-monitor-agent-manager.jar success");
+        } catch (Throwable e) {
+            System.out.println("########find threadpool-monitor-agent-manager.jar 失败");
             e.printStackTrace();
         }
 
         ByteBuddy with = new ByteBuddy().with(TypeValidation.of(true));
         ElementMatcher.Junction<TypeDefinition> elementMatcher = ElementMatchers
-                .is(ThreadPoolExecutor.class)
-                .or(ElementMatchers.named(WEB_ENDPOINT_DISCOVERER_NAME));
+                .is(ThreadPoolExecutor.class);
 
         new AgentBuilder
                 .Default(with)
                 .ignore(ElementMatchers.nameStartsWith("net.bytebuddy."))
                 .type(elementMatcher)
                 .transform(getTransformerThreadPool())
-                .transform(getTransformerWebDiscoverer())
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
                 .with(new RedefinitionListener())
                 .with(new Listener())
@@ -74,18 +70,6 @@ public class ThreadPoolMonitorPreMainAgent {
                         .visit(Advice
                                 .to(ThreadPoolRejectInterceptor.class)
                                 .on(ElementMatchers.named("reject")));
-            }
-            return builder;
-        };
-    }
-
-    private static AgentBuilder.Transformer getTransformerWebDiscoverer() {
-        return (builder, typeDescription, classLoader, module) -> {
-            if (WEB_ENDPOINT_DISCOVERER_NAME.equals(typeDescription.getName())) {
-                return builder
-                        .visit(Advice
-                                .to(EndpointDiscovererInterceptor.class)
-                                .on(ElementMatchers.isConstructor()));
             }
             return builder;
         };
