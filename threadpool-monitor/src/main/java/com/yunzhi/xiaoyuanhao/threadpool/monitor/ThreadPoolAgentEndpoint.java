@@ -3,6 +3,7 @@ package com.yunzhi.xiaoyuanhao.threadpool.monitor;
 import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.manager.ThreadPoolMonitorAgentManager;
 import com.yunzhi.xiaoyuanhao.threadpool.monitor.pojo.ThreadPoolDataDTO;
 import com.yunzhi.xiaoyuanhao.threadpool.monitor.pojo.ThreadPoolUpdateDTO;
+import com.yunzhi.xiaoyuanhao.threadpool.monitor.sys.SystemMetrics;
 import com.yunzhi.xiaoyuanhao.threadpool.monitor.util.PropertiesUtil;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
@@ -25,13 +26,26 @@ import java.util.concurrent.ThreadPoolExecutor;
 @WebEndpoint(id = "threadpool")
 public class ThreadPoolAgentEndpoint {
     private final Map<Integer, String> threadNameMap = new HashMap<>();
+    private static final SystemMetrics systemMetrics = SystemMetrics.getSystemMetrics();
 
     @ReadOperation(produces = "application/json; charset=UTF-8")
     public List<ThreadPoolDataDTO> list() {
+        String ip = PropertiesUtil.getLocalIp();
+        String hostName = PropertiesUtil.getHostName();
+        String appName = PropertiesUtil.getAppName();
+        int systemCpuCount = systemMetrics.getSystemCpuCount();
+        double systemLoadAverage1m = systemMetrics.getSystemLoadAverage1m();
+
         ArrayList<ThreadPoolDataDTO> list = new ArrayList<>();
         Collection<ThreadPoolExecutor> threadPoolExecutorCollection = ThreadPoolMonitorAgentManager.getThreadPoolExecutorCollection();
         for (ThreadPoolExecutor executor : threadPoolExecutorCollection) {
-            list.add(convert(executor));
+            ThreadPoolDataDTO convert = convert(executor);
+            convert.setIp(ip);
+            convert.setHost(hostName);
+            convert.setAppName(appName);
+            convert.setCpuCount(systemCpuCount);
+            convert.setSystemLoadAverage1m(systemLoadAverage1m);
+            list.add(convert);
         }
         return list;
     }
@@ -75,9 +89,6 @@ public class ThreadPoolAgentEndpoint {
         data.setQueueRemainingSize(queue.remainingCapacity());
         data.setRejectCount(ThreadPoolMonitorAgentManager.getRejectCount(executor.hashCode()).intValue());
         data.setRejectHandler(executor.getRejectedExecutionHandler().getClass().getSimpleName());
-        data.setIp(PropertiesUtil.getLocalIp());
-        data.setHost(PropertiesUtil.getHostName());
-        data.setAppName(PropertiesUtil.getAppName());
         return data;
     }
 

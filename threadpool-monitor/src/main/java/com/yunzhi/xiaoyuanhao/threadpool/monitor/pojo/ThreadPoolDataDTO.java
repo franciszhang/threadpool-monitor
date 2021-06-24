@@ -25,6 +25,9 @@ public class ThreadPoolDataDTO {
     private String host;
     private String appName;
 
+    private int cpuCount;
+    private double systemLoadAverage1m;
+
     public String getThreadPoolName() {
         return threadPoolName;
     }
@@ -167,5 +170,21 @@ public class ThreadPoolDataDTO {
 
     public void setAppName(String appName) {
         this.appName = appName;
+    }
+
+    public void setCpuCount(int cpuCount) {
+        this.cpuCount = cpuCount;
+    }
+
+    public void setSystemLoadAverage1m(double systemLoadAverage1m) {
+        this.systemLoadAverage1m = systemLoadAverage1m;
+    }
+
+    public int getCpuCount() {
+        return cpuCount;
+    }
+
+    public double getSystemLoadAverage1m() {
+        return systemLoadAverage1m;
     }
 }

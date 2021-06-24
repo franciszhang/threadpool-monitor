@@ -1,6 +1,5 @@
 package com.yunzhi.xiaoyuanhao.threadpool.monitor.sys;
 
-import io.micrometer.core.lang.Nullable;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -66,24 +65,20 @@ public class SystemMetrics {
     }
 
     private Class<?> getFirstClassFound(List<String> classNames) {
-        Iterator var2 = classNames.iterator();
-
-        while (var2.hasNext()) {
-            String className = (String) var2.next();
-
+        for (String className : classNames) {
             try {
                 return Class.forName(className);
-            } catch (ClassNotFoundException var5) {
+            } catch (ClassNotFoundException ignore) {
             }
         }
         return null;
     }
 
-    private double invoke(@Nullable Method method) {
+    private double invoke(Method method) {
         try {
-            return method != null ? (Double) method.invoke(this.operatingSystemBean) : 0.0D / 0.0;
+            return method != null ? (Double) method.invoke(this.operatingSystemBean) : Double.NaN;
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException var3) {
-            return 0.0D / 0.0;
+            return Double.NaN;
         }
     }
 }
