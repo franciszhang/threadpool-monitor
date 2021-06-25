@@ -13,9 +13,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 
 
 /**
@@ -112,15 +110,23 @@ public class ThreadPoolAgentEndpoint {
         return threadName;
     }
 
-    private String getThreadPrefixName(ThreadPoolExecutor threadPoolExecutor) {
+    private static String getThreadPrefixName(ThreadPoolExecutor threadPoolExecutor) {
         String threadPrefixName = null;
         ThreadFactory threadFactory = threadPoolExecutor.getThreadFactory();
         Class<?> aClass = threadFactory.getClass();
-        try {
-            Field namePrefixField = aClass.getDeclaredField("namePrefix");
-            namePrefixField.setAccessible(true);
-            threadPrefixName = (String) namePrefixField.get(threadFactory);
-        } catch (Exception ignore) {
+
+        Field[] declaredFields = aClass.getDeclaredFields();
+        for (Field declaredField : declaredFields) {
+            declaredField.setAccessible(true);
+            Object o = null;
+            try {
+                o = declaredField.get(threadFactory);
+            } catch (Exception ignore) {
+            }
+            if (o instanceof String) {
+                threadPrefixName = o.toString();
+                break;
+            }
         }
         return threadPrefixName;
     }
