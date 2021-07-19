@@ -1,5 +1,7 @@
 package com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.manager;
 
+import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.endpoint.ThreadpoolEndpointServer;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,6 +13,11 @@ import java.util.concurrent.atomic.AtomicLong;
  * @version 2021-06-07
  */
 public class ThreadPoolMonitorAgentManager {
+
+    static {
+        ThreadpoolEndpointServer.initManageHttpServer();
+    }
+
     private final static Map<Integer, ThreadPoolExecutor> THREAD_POOL_EXECUTOR_MAP = new ConcurrentHashMap<>();
 
     private final static Map<Integer, AtomicLong> REJECT_COUNT_MAP = new ConcurrentHashMap<>();

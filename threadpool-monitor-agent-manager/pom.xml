@@ -5,7 +5,7 @@
 
     <groupId>com.yunzhi.xiaoyuanhao</groupId>
     <artifactId>threadpool-monitor-agent-manager</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>threadpool-monitor-agent-manager</name>
     <description>threadpool-monitor-agent-manager</description>
     <properties>
