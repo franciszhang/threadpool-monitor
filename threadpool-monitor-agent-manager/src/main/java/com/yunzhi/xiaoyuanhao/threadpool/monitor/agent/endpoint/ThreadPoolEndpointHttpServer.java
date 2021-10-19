@@ -2,10 +2,12 @@ package com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.endpoint;
 
 import com.sun.net.httpserver.HttpServer;
 import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.endpoint.pojo.ThreadPoolDataDTO;
-import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.endpoint.pojo.ThreadPoolUpdateDTO;
 import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.manager.ThreadPoolMonitorAgentManager;
-import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.util.*;
+import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.util.PropertiesUtil;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
@@ -13,25 +15,31 @@ import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 /**
  * @author francis
  * @version 2021-07-14
  */
-public class ThreadpoolEndpointServer {
+public class ThreadPoolEndpointHttpServer {
 
 
-    public static void initManageHttpServer() {
-        Object managePort = System.getProperties().getOrDefault("manage.port", System.getenv("manage.port"));
-        if (managePort == null || "".equals(managePort)) {
-            managePort = 8081;
-        }
+    public static void init() {
+        String managePort = PropertiesUtil.getManagePort();
         try {
-            HttpServer server = HttpServer.create(new InetSocketAddress((int) managePort), 0);
+            int managePortInt = Integer.parseInt(managePort);
+            HttpServer server = HttpServer.create(new InetSocketAddress(managePortInt), 0);
             server.createContext("/actuator/threadpool", httpExchange -> {
                 httpExchange.sendResponseHeaders(200, 0);
+                String requestMethod = httpExchange.getRequestMethod();
                 OutputStream os = httpExchange.getResponseBody();
-                os.write(toJsonBytes(list()));
+                if ("POST".equals(requestMethod.toUpperCase())) {
+                    Map<String, String> requestBodyMap = getRequestBodyMap(httpExchange.getRequestBody());
+                    os.write(update(requestBodyMap).getBytes());
+                }
+                if ("GET".equals(requestMethod.toUpperCase())) {
+                    os.write(toBytes(list()));
+                }
                 os.close();
             });
             server.start();
@@ -39,6 +47,24 @@ public class ThreadpoolEndpointServer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static Map<String, String> getRequestBodyMap(InputStream is) {
+        HashMap<String, String> params = new HashMap<>();
+        String collect = new BufferedReader(new InputStreamReader(is))
+                .lines().collect(Collectors.joining(System.lineSeparator()));
+        if (!collect.contains("}") || !collect.contains("{") || !collect.contains(",")) {
+            return params;
+        }
+        collect = collect.replace("{", "").replace("}", "");
+        String[] split = collect.split(",");
+        for (String item : split) {
+            if (item.contains(":")) {
+                String[] split1 = item.split(":");
+                params.put(split1[0].trim().replace("\"",""), split1[1].trim().replace("\"",""));
+            }
+        }
+        return params;
     }
 
     private static final Map<Integer, String> threadNameMap = new HashMap<>();
@@ -66,10 +92,16 @@ public class ThreadpoolEndpointServer {
         return list;
     }
 
-    private ThreadPoolUpdateDTO update(Integer hashCode, Integer coreSize, Integer maxSize) {
+    private static String update(Map<String, String> params) {
+        Integer hashCode = params.get("hashCode") != null ? Integer.valueOf(params.get("hashCode")) : null;
+        Integer coreSize = params.get("coreSize") != null ? Integer.valueOf(params.get("coreSize")) : null;
+        Integer maxSize = params.get("maxSize") != null ? Integer.valueOf(params.get("maxSize")) : null;
+        if (hashCode == null) {
+            return "线程hashCode不能为空";
+        }
         ThreadPoolExecutor threadPoolExecutor = ThreadPoolMonitorAgentManager.getThreadPoolExecutor(hashCode);
         if (threadPoolExecutor == null) {
-            return new ThreadPoolUpdateDTO("未找到需要修改的线程");
+            return "未找到需要修改的线程,hashCode:" + hashCode;
         }
         if (maxSize == null || maxSize <= 0) {
             maxSize = threadPoolExecutor.getMaximumPoolSize();
@@ -77,13 +109,13 @@ public class ThreadpoolEndpointServer {
         if (coreSize == null || coreSize <= 0) {
             coreSize = threadPoolExecutor.getCorePoolSize();
         }
-        if (maxSize < coreSize) {
-            return new ThreadPoolUpdateDTO("maxSize必须要大于coreSize");
+        if (coreSize > (int) maxSize) {
+            return "maxSize必须要大于coreSize";
         }
         // 修改
         threadPoolExecutor.setCorePoolSize(coreSize);
         threadPoolExecutor.setMaximumPoolSize(maxSize);
-        return new ThreadPoolUpdateDTO();
+        return "success";
     }
 
     private static ThreadPoolDataDTO convert(ThreadPoolExecutor executor) {
@@ -212,9 +244,10 @@ public class ThreadpoolEndpointServer {
         return name;
     }
 
-    private static byte[] toJsonBytes(List<ThreadPoolDataDTO> list) {
+    private static byte[] toBytes(List<ThreadPoolDataDTO> list) {
         Object[] objects = list.toArray();
         String string = Arrays.toString(objects);
         return string.getBytes();
     }
+
 }

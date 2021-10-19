@@ -1,7 +1,6 @@
 package com.yunzhi.xiaoyuanhao.threadpool.monitor.agent;
 
 
-import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.endpoint.ThreadpoolEndpointServer;
 import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.interceptor.ThreadPoolConstructorInterceptor;
 import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.interceptor.ThreadPoolRejectInterceptor;
 import net.bytebuddy.ByteBuddy;
@@ -36,7 +35,7 @@ public class ThreadPoolMonitorPreMainAgent {
 
     public static void premain(String agentArgs, Instrumentation inst) {
         try {
-            inst.appendToBootstrapClassLoaderSearch(new JarFile(findAgentPath() + "/threadpool-monitor-agent-manager-1.0.1.jar"));
+            inst.appendToBootstrapClassLoaderSearch(new JarFile(findAgentPath() + "/threadpool-monitor-agent-manager-1.0.2.jar"));
             System.out.println("########find threadpool-monitor-agent-manager.jar success");
         } catch (Throwable e) {
             System.out.println("########find threadpool-monitor-agent-manager.jar 失败");

@@ -1,6 +1,7 @@
 package com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.manager;
 
-import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.endpoint.ThreadpoolEndpointServer;
+import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.beat.HeartBeatHttpServer;
+import com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.endpoint.ThreadPoolEndpointHttpServer;
 
 import java.util.Collection;
 import java.util.Map;
@@ -15,7 +16,8 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ThreadPoolMonitorAgentManager {
 
     static {
-        ThreadpoolEndpointServer.initManageHttpServer();
+        ThreadPoolEndpointHttpServer.init();
+        HeartBeatHttpServer.init();
     }
 
     private final static Map<Integer, ThreadPoolExecutor> THREAD_POOL_EXECUTOR_MAP = new ConcurrentHashMap<>();
