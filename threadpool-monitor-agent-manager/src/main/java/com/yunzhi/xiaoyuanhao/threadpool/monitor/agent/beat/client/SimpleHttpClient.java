@@ -50,8 +50,7 @@ public class SimpleHttpClient {
 
     private SimpleHttpResponse request(InetSocketAddress socketAddress,
                                        RequestMethod type, String requestPath,
-                                       Map<String, String> paramsMap, Charset charset, int soTimeout)
-            throws IOException {
+                                       Map<String, String> paramsMap, Charset charset, int soTimeout) {
         Socket socket = null;
         BufferedWriter writer;
         try {
@@ -75,11 +74,10 @@ public class SimpleHttpClient {
                 writer.write(params);
             }
             writer.flush();
-
 //            SimpleHttpResponse response = new SimpleHttpResponseParser().parse(socket.getInputStream());
             socket.close();
             socket = null;
-            return null;
+        } catch (Exception ignore) {
         } finally {
             if (socket != null) {
                 try {
@@ -89,6 +87,7 @@ public class SimpleHttpClient {
                 }
             }
         }
+        return null;
     }
 
     private String getRequestPath(RequestMethod type, String requestPath,
@@ -152,8 +151,6 @@ public class SimpleHttpClient {
          */
         POST
     }
-
-
 
 
 }
