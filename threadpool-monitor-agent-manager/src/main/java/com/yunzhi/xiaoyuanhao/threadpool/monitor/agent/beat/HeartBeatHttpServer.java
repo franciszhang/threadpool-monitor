@@ -45,7 +45,7 @@ public class HeartBeatHttpServer {
             System.out.println("dashboardServerAddr is null!");
             return;
         }
-        SimpleHttpRequest request = new SimpleHttpRequest(dashboardServerAddr, "/threadpool/monitor/register");
+        SimpleHttpRequest request = new SimpleHttpRequest(dashboardServerAddr, "/threadpool/machine/register");
         heartbeatParams.put("timestamp", Long.toString(System.currentTimeMillis()));
         request.setParams(heartbeatParams);
         try {
