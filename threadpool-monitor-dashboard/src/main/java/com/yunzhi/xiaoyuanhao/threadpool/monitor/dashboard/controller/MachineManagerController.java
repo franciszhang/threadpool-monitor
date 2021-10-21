@@ -15,8 +15,8 @@ import java.util.List;
  * @version 2021-07-19
  */
 @RestController
-@RequestMapping("/threadpool/monitor")
-public class MonitorManagerController {
+@RequestMapping("/threadpool/machine")
+public class MachineManagerController {
     @Autowired
     private MachineService machineService;
 
@@ -28,9 +28,14 @@ public class MonitorManagerController {
     }
 
     @GetMapping("/list")
-    public BaseResponse<List<MachineInfo>> listExecutors() {
+    public BaseResponse<List<MachineInfo>> listMachine() {
         return BaseResponse.isSuccess(machineService.list());
     }
 
+    @PostMapping("/remove")
+    public BaseResponse<Void> removeMachine(String ip) {
+        machineService.remove(ip);
+        return BaseResponse.isSuccess();
+    }
 
 }

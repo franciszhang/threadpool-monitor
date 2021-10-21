@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>更新线程池配置</title>
+</head>
+<body>
+<h3>更新线程池配置</h3>
+<div class="panel panel-default">
+    <div>
+        <label>线程池ID:<input class="hashCode" type="text" name="hashCode" th:value="${hashCode}" readonly/></label><br/>
+    </div>
+    <div><label>核心线程数<input class="coreSize" type="text" name="coreSize" th:value="${coreSize}"/></label><br/></div>
+    <div><label>最大线程数<input class="maxSize" type="text" name="maxSize" th:value="${maxSize}"/></label><br/></div>
+    <div>
+        <button th:onclick="update([[${ip}]],[[${port}]])">
+            修改配置
+        </button>
+    </div>
+</div>
+</body>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/ajaxutil.js"></script>
+<script>
+    function update(ip, port) {
+        var hashCode = $('.hashCode').val();
+        var coreSize = $('.coreSize').val();
+        var maxSize = $('.maxSize').val();
+        console.log(hashCode, coreSize, maxSize)
+        var playload = {ip: ip, port: port, hashCode: hashCode, coreSize: coreSize, maxSize: maxSize};
+        AjaxUtil.post('/update/threadpool', playload,
+            function (result) {
+                console.log("#####" + JSON.stringify(result))
+                if (result === 'success') {
+                    alert(result)
+                    location.reload();
+                } else {
+                    alert(result);
+                }
+            })
+    }
+
+</script>
+</html>

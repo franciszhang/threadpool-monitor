@@ -1,6 +1,6 @@
 package com.yunzhi.xiaoyuanhao.threadpool.monitor.dashboard.dao.impl;
 
-import com.yunzhi.xiaoyuanhao.threadpool.monitor.dashboard.dao.ThreadpoolRepository;
+import com.yunzhi.xiaoyuanhao.threadpool.monitor.dashboard.dao.MachineRepository;
 import com.yunzhi.xiaoyuanhao.threadpool.monitor.dashboard.dao.entity.MachineInfoEntity;
 import com.yunzhi.xiaoyuanhao.threadpool.monitor.dashboard.pojo.MachineInfo;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 2021-10-19
  */
 @Service
-public class MemoryThreadpoolRepositoryImpl implements ThreadpoolRepository {
+public class MemoryMachineRepositoryImpl implements MachineRepository {
     private static Map<String, MachineInfoEntity> ip2machineMap = new ConcurrentHashMap<>();
 
     @Override
@@ -35,5 +35,10 @@ public class MemoryThreadpoolRepositoryImpl implements ThreadpoolRepository {
     @Override
     public List<MachineInfoEntity> list() {
         return new ArrayList<>(ip2machineMap.values());
+    }
+
+    @Override
+    public void remove(String ip) {
+        ip2machineMap.remove(ip);
     }
 }

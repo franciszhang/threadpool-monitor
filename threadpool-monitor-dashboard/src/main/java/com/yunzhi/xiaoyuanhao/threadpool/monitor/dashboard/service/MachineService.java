@@ -14,4 +14,6 @@ public interface MachineService {
     void register(MachineInfo machineInfo);
 
     List<MachineInfo> list();
+
+    void remove(String ip);
 }

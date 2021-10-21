@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>机器列表</title>
+</head>
+<body>
+<h3>机器列表</h3>
+<div class="panel panel-default">
+    <table class="table table-bordered table-hover" border="1" cellspacing="0" cellpadding="10">
+        <thead>
+        <tr>
+            <td>#</td>
+            <td>应用名</td>
+            <td>机器名</td>
+            <td>IP</td>
+            <td>端口</td>
+            <td>健康状态</td>
+            <td>上次心跳时间</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item:${list}">
+            <td th:text="${itemStat.index+1}"></td>
+            <td style="color: blue" th:text="${item.appName}"></td>
+            <td th:text="${item.hostname}"></td>
+            <td th:text="${item.ip}"></td>
+            <td th:text="${item.port}"></td>
+            <td th:switch="${item.status}">
+                <span th:case="0" style="color: red; ">失联</span>
+                <span th:case="1" style="color: green; ">健康</span>
+            </td>
+            <td th:text="${item.lastTime}"></td>
+            <td th:switch="${item.status}">
+                <span th:case="0"><button th:onclick="removeMachine([[${item.ip}]])">移除</button></span>
+                <span th:case="1"><a
+                        th:href="@{'/threadpool/list?ip='+${item.ip}+'&port='+${item.port}}">线程池列表</a></span>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/ajaxutil.js"></script>
+<script>
+    function removeMachine(ip) {
+        console.log(ip)
+        AjaxUtil.post('/threadpool/machine/remove?ip=' + ip, {},
+            function (result) {
+                console.log("#####" + JSON.stringify(result))
+                if (result.code === 0) {
+                    console.log(result.code)
+                    location.reload();
+                } else {
+                    alert(result.msg);
+                }
+            })
+    }
+</script>
+
+</html>
