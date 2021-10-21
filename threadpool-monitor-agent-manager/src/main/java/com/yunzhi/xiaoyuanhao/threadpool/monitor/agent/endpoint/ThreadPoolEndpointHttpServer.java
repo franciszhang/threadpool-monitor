@@ -97,11 +97,11 @@ public class ThreadPoolEndpointHttpServer {
         Integer coreSize = params.get("coreSize") != null ? Integer.valueOf(params.get("coreSize")) : null;
         Integer maxSize = params.get("maxSize") != null ? Integer.valueOf(params.get("maxSize")) : null;
         if (hashCode == null) {
-            return "线程hashCode不能为空";
+            return "threadpool hashCode is not empty!";
         }
         ThreadPoolExecutor threadPoolExecutor = ThreadPoolMonitorAgentManager.getThreadPoolExecutor(hashCode);
         if (threadPoolExecutor == null) {
-            return "未找到需要修改的线程,hashCode:" + hashCode;
+            return "can't find threadpool by hashCode,hashCode:" + hashCode;
         }
         if (maxSize == null || maxSize <= 0) {
             maxSize = threadPoolExecutor.getMaximumPoolSize();
@@ -110,7 +110,7 @@ public class ThreadPoolEndpointHttpServer {
             coreSize = threadPoolExecutor.getCorePoolSize();
         }
         if (coreSize > (int) maxSize) {
-            return "maxSize必须要大于coreSize";
+            return "maxSize must greater than coreSize";
         }
         // 修改
         threadPoolExecutor.setCorePoolSize(coreSize);
