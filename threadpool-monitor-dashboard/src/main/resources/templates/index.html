@@ -33,7 +33,7 @@
             </td>
             <td th:text="${item.lastTime}"></td>
             <td th:switch="${item.status}">
-                <span th:case="0"><button th:onclick="removeMachine([[${item.ip}]])">移除</button></span>
+                <span th:case="0"><button th:onclick="removeMachine([[${item.ip}]],[[${item.port}]])">移除</button></span>
                 <span th:case="1"><a
                         th:href="@{'/threadpool/list?ip='+${item.ip}+'&port='+${item.port}}">线程池列表</a></span>
             </td>
@@ -46,9 +46,9 @@
 <script src="/js/jquery.min.js"></script>
 <script src="/js/ajaxutil.js"></script>
 <script>
-    function removeMachine(ip) {
+    function removeMachine(ip,port) {
         console.log(ip)
-        AjaxUtil.post('/threadpool/machine/remove?ip=' + ip, {},
+        AjaxUtil.post('/threadpool/machine/remove?ip=' + ip+port, {},
             function (result) {
                 console.log("#####" + JSON.stringify(result))
                 if (result.code === 0) {

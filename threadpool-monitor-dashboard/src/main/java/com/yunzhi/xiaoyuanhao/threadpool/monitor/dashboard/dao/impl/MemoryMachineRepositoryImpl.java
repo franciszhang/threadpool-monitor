@@ -29,7 +29,7 @@ public class MemoryMachineRepositoryImpl implements MachineRepository {
         machineInfoEntity.setIp(machineInfo.getIp());
         machineInfoEntity.setPort(machineInfo.getPort());
         machineInfoEntity.setLastHeartbeat(machineInfo.getTimestamp());
-        ip2machineMap.put(machineInfo.getIp(), machineInfoEntity);
+        ip2machineMap.put(machineInfo.getIp() + machineInfo.getPort(), machineInfoEntity);
     }
 
     @Override
