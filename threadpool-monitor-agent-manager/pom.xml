@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.yunzhi.xiaoyuanhao</groupId>
+    <groupId>com.frank.monitor</groupId>
     <artifactId>threadpool-monitor-agent-manager</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.0</version>
     <name>threadpool-monitor-agent-manager</name>
     <description>threadpool-monitor-agent-manager</description>
     <properties>
@@ -28,18 +28,4 @@
             </plugin>
         </plugins>
     </build>
-
-
-    <distributionManagement>
-        <repository>
-            <id>nbugs_releases</id>
-            <name>nbugs releases</name>
-            <url>http://artifactory.api.xiaoyuanhao.com/artifactory/libs-release-local</url>
-        </repository>
-        <snapshotRepository>
-            <id>nbugs_snapshots</id>
-            <name>nbugs snapshots</name>
-            <url>http://artifactory.api.xiaoyuanhao.com/artifactory/libs-snapshot-local</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>

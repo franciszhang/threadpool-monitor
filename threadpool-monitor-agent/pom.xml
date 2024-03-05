@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.yunzhi.xiaoyuanhao</groupId>
+    <groupId>com.frank.monitor</groupId>
     <artifactId>threadpool-monitor-agent</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.0</version>
     <name>threadpool-monitor-agent</name>
     <description>threadpool-monitor-agent</description>
 
@@ -21,9 +21,9 @@
             <version>1.10.22</version>
         </dependency>
         <dependency>
-            <groupId>com.yunzhi.xiaoyuanhao</groupId>
+            <groupId>com.frank.monitor</groupId>
             <artifactId>threadpool-monitor-agent-manager</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
@@ -43,7 +43,7 @@
                         </manifest>
                         <manifestEntries>
                             <Premain-Class>
-                                com.yunzhi.xiaoyuanhao.threadpool.monitor.agent.ThreadPoolMonitorPreMainAgent
+                                com.frank.threadpool.monitor.agent.ThreadPoolMonitorPreMainAgent
                             </Premain-Class>
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>

@@ -25,13 +25,13 @@
             <td th:text="${itemStat.index+1}"></td>
             <td style="color: blue;width: 100px;table-layout: fixed;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;"
                 th:text="${item.threadPoolName}"></td>
-            <td th:text="${item.threadPoolHashCode}"></td>
+            <td th:text="${item.identityHashCode}"></td>
             <td th:text="${item.coreSize}"></td>
             <td th:text="${item.maximumPoolSize}"></td>
             <td th:text="${item.queueType}"></td>
             <td th:text="${item.queueCapacity}"></td>
             <td>
-                <button th:onclick="update([[${item.ip}]],[[${item.port}]],[[${item.threadPoolHashCode}]],[[${item.coreSize}]],[[${item.maximumPoolSize}]])">
+                <button th:onclick="update([[${item.ip}]],[[${item.port}]],[[${item.identityHashCode}]],[[${item.coreSize}]],[[${item.maximumPoolSize}]])">
                     修改配置
                 </button>
             </td>
